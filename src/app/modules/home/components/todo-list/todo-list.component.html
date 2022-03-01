@@ -1,24 +1,26 @@
-<section>
-    <ul>
-        <li>
-            <input type="checkbox">
-            <input type="text">
+<section [ngClass]="{'loading': !taskList.length}">
+    <ul *ngIf="taskList.length; else noList">
+        <li *ngFor="let item of taskList; let indice = index">
+            <input 
+                type="checkbox" 
+                [(ngModel)]="item.checked"
+            >
+            <input 
+                type="text" 
+                [(ngModel)]="item.task" 
+                (keyup)="validationInput(item.task, indice)"
+                [ngClass]="{'checked': item.checked}"
+            >
 
-            <button>
-                <img src="assets/icons/icon-trash.svg" alt="Lixeira">
-            </button>
-        </li>
-
-        <li>
-            <input type="checkbox">
-            <input type="text" class="checked">
-
-            <button>
+            <button (click)="deleteItemTaskList(indice)">
                 <img src="assets/icons/icon-trash.svg" alt="Lixeira">
             </button>
         </li>
     </ul>
 </section>
-<app-todo-input-add-itens></app-todo-input-add-itens>
-<app-todo-button-delete-all></app-todo-button-delete-all>
+<app-todo-input-add-itens (emitItemTaskList)="setEmitTaskList($event)"></app-todo-input-add-itens>
+<app-todo-button-delete-all *ngIf="taskList.length" (click)="deleteAllTaskList()"></app-todo-button-delete-all>
 
+<ng-template #noList>
+    <h4>Não há itens</h4>
+</ng-template>
